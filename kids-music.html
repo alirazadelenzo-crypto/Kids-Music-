@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎵 KidBeats - Free Music For Kids!</title>
+<link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD93D;
+    --orange: #FF6B35;
+    --pink: #FF4F9A;
+    --purple: #9B5DE5;
+    --blue: #00BBF9;
+    --green: #00F5A0;
+    --dark: #1A0A3B;
+    --white: #FFFBF0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--dark);
+    color: var(--white);
+    overflow-x: hidden;
+    cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><text y='26' font-size='26'>🎵</text></svg>") 16 16, auto;
+  }
+
+  /* ========== STARS BACKGROUND ========== */
+  .stars {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 20% 50%, #2d0a4e 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, #0a1a4e 0%, transparent 50%),
+                var(--dark);
+  }
+  .star {
+    position: absolute; border-radius: 50%;
+    background: white; animation: twinkle var(--dur) ease-in-out infinite var(--delay);
+  }
+  @keyframes twinkle {
+    0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:1;transform:scale(1.4)}
+  }
+
+  /* ========== FLOATING NOTES ========== */
+  .note {
+    position: fixed; font-size: 2rem; pointer-events: none; z-index: 0;
+    animation: floatNote var(--nd) ease-in-out infinite var(--nd2);
+    opacity: 0.15;
+  }
+  @keyframes floatNote {
+    0%,100%{transform:translateY(0) rotate(-10deg)} 50%{transform:translateY(-30px) rotate(10deg)}
+  }
+
+  /* ========== HERO ========== */
+  header {
+    position: relative; z-index: 10;
+    padding: 40px 20px 20px;
+    text-align: center;
+  }
+
+  .logo {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--yellow), var(--orange), var(--pink), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(255,180,0,0.4));
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+  @keyframes logoFloat {
+    0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}
+  }
+
+  .tagline {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+
+  nav {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    margin-top: 30px;
+  }
+  .nav-btn {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 1.1rem;
+    padding: 10px 22px;
+    border-radius: 50px;
+    border: none; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .nav-btn:hover { transform: translateY(-3px) scale(1.05); }
+  .nav-btn.active, .nav-btn:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
+  .nb1{background:var(--yellow);color:var(--dark)}
+  .nb2{background:var(--pink);color:white}
+  .nb3{background:var(--blue);color:var(--dark)}
+  .nb4{background:var(--green);color:var(--dark)}
+
+  /* ========== HERO BANNER ========== */
+  .hero-banner {
+    position: relative; z-index: 10;
+    margin: 20px auto;
+    max-width: 800px; padding: 0 20px;
+    text-align: center;
+  }
+  .hero-banner h2 {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    margin-bottom: 10px;
+  }
+  .hero-banner p {
+    font-size: 1.1rem; color: rgba(255,255,255,0.7); line-height: 1.6;
+  }
+  .free-badge {
+    display: inline-block;
+    background: var(--yellow); color: var(--dark);
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 1.5rem; padding: 6px 20px;
+    border-radius: 50px; margin-bottom: 16px;
+    animation: wiggle 2s ease-in-out infinite;
+    box-shadow: 0 4px 15px rgba(255,217,61,0.5);
+  }
+  @keyframes wiggle {
+    0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)}
+  }
+
+  /* ========== NOW PLAYING ========== */
+  .now-playing {
+    position: relative; z-index: 10;
+    margin: 30px auto; max-width: 700px; padding: 0 20px;
+  }
+  .player-card {
+    background: linear-gradient(135deg, rgba(155,93,229,0.3), rgba(0,187,249,0.2));
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .player-label {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 0.9rem; letter-spacing: 0.2em;
+    color: var(--green); text-transform: uppercase; margin-bottom: 15px;
+  }
+  .player-info {
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .album-art {
+    width: 90px; height: 90px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    flex-shrink: 0;
+    animation: spinSlow 8s linear infinite paused;
+    transition: animation-play-state 0.3s;
+  }
+  .album-art.playing { animation-play-state: running; }
+  @keyframes spinSlow { to { transform: rotate(360deg); } }
+  .player-meta { flex: 1; min-width: 150px; }
+  .song-title {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 1.6rem; line-height: 1.2;
+  }
+  .song-artist { color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-top: 4px; }
+  .song-category {
+    display: inline-block; margin-top: 8px;
+    background: rgba(255,255,255,0.1);
+    padding: 3px 12px; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 700;
+  }
+  .controls {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 20px; flex-wrap: wrap;
+  }
+  .ctrl-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.5rem; color: white;
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.1); }
+  .play-btn {
+    background: var(--yellow) !important; color: var(--dark) !important;
+    width: 56px; height: 56px; font-size: 1.8rem;
+    box-shadow: 0 4px 20px rgba(255,217,61,0.5);
+  }
+  .play-btn:hover { background: var(--orange) !important; transform: scale(1.1) !important; }
+  .progress-wrap { flex: 1; min-width: 200px; }
+  .progress-bar {
+    width: 100%; height: 8px;
+    background: rgba(255,255,255,0.15); border-radius: 10px;
+    overflow: hidden; cursor: pointer; margin-bottom: 6px;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--blue), var(--green));
+    border-radius: 10px; transition: width 0.1s; width: 0%;
+  }
+  .time-row { display: flex; justify-content: space-between; font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+  .volume-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+  .volume-row input[type=range] {
+    flex: 1; accent-color: var(--pink);
+    height: 4px;
+  }
+
+  /* ========== SONG GRID ========== */
+  .section {
+    position: relative; z-index: 10;
+    max-width: 1100px; margin: 40px auto; padding: 0 20px;
+  }
+  .section-title {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    margin-bottom: 25px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title span { font-size: 2rem; }
+
+  .category-tabs {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px;
+  }
+  .cat-tab {
+    font-family: 'Bubblegum Sans', cursive;
+    padding: 8px 20px; border-radius: 50px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: white; cursor: pointer; font-size: 1rem;
+    transition: all 0.2s;
+  }
+  .cat-tab:hover, .cat-tab.active {
+    border-color: var(--yellow); background: rgba(255,217,61,0.15);
+    color: var(--yellow);
+  }
+
+  .song-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .song-card {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 24px; padding: 20px;
+    cursor: pointer; transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .song-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--card-color, transparent);
+    opacity: 0; transition: opacity 0.3s;
+    border-radius: 22px;
+  }
+  .song-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.25); }
+  .song-card:hover::before { opacity: 0.08; }
+  .song-card.active-card {
+    border-color: var(--yellow) !important;
+    box-shadow: 0 0 30px rgba(255,217,61,0.3);
+  }
+  .card-emoji {
+    font-size: 3.5rem; margin-bottom: 12px;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .song-card:hover .card-emoji { transform: scale(1.2) rotate(5deg); }
+  .card-title {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 1.2rem; margin-bottom: 4px;
+  }
+  .card-meta { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+  .card-duration {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(0,0,0,0.4);
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 700;
+  }
+  .card-badge {
+    display: inline-block; margin-top: 10px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .card-play-indicator {
+    position: absolute; bottom: 16px; right: 16px;
+    font-size: 1.5rem; opacity: 0; transition: opacity 0.2s;
+  }
+  .song-card:hover .card-play-indicator { opacity: 1; }
+  .song-card.active-card .card-play-indicator { opacity: 1; }
+
+  /* ========== CATEGORIES SHOWCASE ========== */
+  .cat-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .cat-card {
+    border-radius: 24px; padding: 28px 20px;
+    text-align: center; cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 2px solid transparent;
+  }
+  .cat-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+  .cat-card-emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
+  .cat-card-name {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 1.2rem;
+  }
+  .cat-card-count { font-size: 0.8rem; margin-top: 4px; opacity: 0.7; }
+
+  /* ========== FOOTER ========== */
+  footer {
+    position: relative; z-index: 10;
+    text-align: center; padding: 40px 20px;
+    color: rgba(255,255,255,0.3); font-size: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 60px;
+  }
+  footer strong { color: var(--yellow); }
+
+  /* ========== ANIMATIONS ========== */
+  .bounce-in { animation: bounceIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+  @keyframes bounceIn { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
+  .fade-up { animation: fadeUp 0.6s ease both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Wave animation for playing card */
+  .wave-bars { display:flex; align-items:flex-end; gap:3px; height:20px; }
+  .wave-bar {
+    width:4px; border-radius:2px; background:var(--green);
+    animation: wavePulse 0.6s ease-in-out infinite;
+  }
+  .wave-bar:nth-child(2){animation-delay:.1s}
+  .wave-bar:nth-child(3){animation-delay:.2s}
+  .wave-bar:nth-child(4){animation-delay:.15s}
+  @keyframes wavePulse {
+    0%,100%{height:4px} 50%{height:18px}
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Floating notes -->
+<div class="note" style="--nd:4s;--nd2:0s;top:10%;left:5%">🎵</div>
+<div class="note" style="--nd:6s;--nd2:1s;top:30%;right:8%">🎶</div>
+<div class="note" style="--nd:5s;--nd2:2s;top:60%;left:3%">🎸</div>
+<div class="note" style="--nd:7s;--nd2:0.5s;top:80%;right:5%">🥁</div>
+<div class="note" style="--nd:4.5s;--nd2:3s;top:20%;left:50%">🎺</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">KidBeats 🎵</div>
+  <div class="tagline">✨ 100% Free Music For Little Ears ✨</div>
+  <nav>
+    <button class="nav-btn nb1 active" onclick="filterCategory('all')">🎵 All Songs</button>
+    <button class="nav-btn nb2" onclick="filterCategory('lullabies')">🌙 Lullabies</button>
+    <button class="nav-btn nb3" onclick="filterCategory('dance')">💃 Dance Party</button>
+    <button class="nav-btn nb4" onclick="filterCategory('learning')">📚 Learning</button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero-banner fade-up">
+  <div class="free-badge">🎁 Always 100% FREE!</div>
+  <h2>Music That Makes Kids Happy 🌈</h2>
+  <p>Explore hundreds of kid-friendly songs — lullabies, dance songs, alphabet tunes, and more. No sign-up needed. Just press play!</p>
+</div>
+
+<!-- NOW PLAYING -->
+<div class="now-playing">
+  <div class="player-card">
+    <div class="player-label">🎧 Now Playing</div>
+    <div class="player-info">
+      <div class="album-art" id="albumArt">🌟</div>
+      <div class="player-meta">
+        <div class="song-title" id="songTitle">Pick a Song!</div>
+        <div class="song-artist" id="songArtist">Tap any song below to play</div>
+        <span class="song-category" id="songCategory" style="background:rgba(255,217,61,0.2);color:var(--yellow)">Ready to play!</span>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" onclick="prevSong()" title="Previous">⏮</button>
+      <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="ctrl-btn" onclick="nextSong()" title="Next">⏭</button>
+      <div class="progress-wrap">
+        <div class="progress-bar" onclick="seekProgress(event)">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="time-row">
+          <span id="timeElapsed">0:00</span>
+          <span id="timeDuration">--</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span>🔊</span>
+        <input type="range" min="0" max="1" step="0.05" value="0.7" id="volumeSlider" onchange="setVolume(this.value)" style="width:80px;accent-color:var(--pink)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SONGS SECTION -->
+<div class="section">
+  <div class="section-title"><span>🎶</span> Songs for Kids</div>
+  <div class="category-tabs" id="catTabs">
+    <button class="cat-tab active" onclick="filterSongs('all',this)">All</button>
+    <button class="cat-tab" onclick="filterSongs('lullabies',this)">🌙 Lullabies</button>
+    <button class="cat-tab" onclick="filterSongs('dance',this)">💃 Dance</button>
+    <button class="cat-tab" onclick="filterSongs('learning',this)">📚 Learning</button>
+    <button class="cat-tab" onclick="filterSongs('nature',this)">🌿 Nature</button>
+    <button class="cat-tab" onclick="filterSongs('fun',this)">🎉 Fun</button>
+  </div>
+  <div class="song-grid" id="songGrid"></div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="section">
+  <div class="section-title"><span>🌈</span> Browse Categories</div>
+  <div class="cat-showcase">
+    <div class="cat-card" style="background:linear-gradient(135deg,#2d0a4e,#4a1a7a)" onclick="filterSongs('lullabies',null)">
+      <span class="cat-card-emoji">🌙</span>
+      <div class="cat-card-name">Lullabies</div>
+      <div class="cat-card-count">Calm & Sleepy</div>
+    </div>
+    <div class="cat-card" style="background:linear-gradient(135deg,#0a2e4e,#1a5a7a)" onclick="filterSongs('dance',null)">
+      <span class="cat-card-emoji">💃</span>
+      <div class="cat-card-name">Dance Party</div>
+      <div class="cat-card-count">Get Moving!</div>
+    </div>
+    <div class="cat-card" style="background:linear-gradient(135deg,#0a3e1a,#1a7a3a)" onclick="filterSongs('learning',null)">
+      <span class="cat-card-emoji">📚</span>
+      <div class="cat-card-name">Learning</div>
+      <div class="cat-card-count">ABCs & 123s</div>
+    </div>
+    <div class="cat-card" style="background:linear-gradient(135deg,#2e1a0a,#7a3a1a)" onclick="filterSongs('nature',null)">
+      <span class="cat-card-emoji">🌿</span>
+      <div class="cat-card-name">Nature</div>
+      <div class="cat-card-count">Animals & Plants</div>
+    </div>
+    <div class="cat-card" style="background:linear-gradient(135deg,#2e0a1a,#7a1a4a)" onclick="filterSongs('fun',null)">
+      <span class="cat-card-emoji">🎉</span>
+      <div class="cat-card-name">Just for Fun</div>
+      <div class="cat-card-count">Silly Songs</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>🎵 <strong>KidBeats</strong> — Free music for children of all ages! 🎵</p>
+  <p style="margin-top:8px">All songs are kid-safe, royalty-free, and always 100% free to play!</p>
+</footer>
+
+<script>
+// ===== STARS =====
+const starsEl = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div'); s.className='star';
+  const sz=Math.random()*3+1;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s`;
+  starsEl.appendChild(s);
+}
+
+// ===== SONG DATA =====
+const songs = [
+  {id:1,title:"Twinkle Twinkle",artist:"Classic Nursery",emoji:"⭐",category:"lullabies",badge:"Classic",badgeColor:"#9B5DE5",duration:"2:34",cardColor:"rgba(155,93,229,0.3)",freq:261,desc:"The beloved classic lullaby"},
+  {id:2,title:"ABCs Song",artist:"Learning Kids",emoji:"🔤",category:"learning",badge:"Learn",badgeColor:"#00BBF9",duration:"1:58",cardColor:"rgba(0,187,249,0.2)",freq:294,desc:"Sing the alphabet A to Z"},
+  {id:3,title:"Baby Shark",artist:"Ocean Friends",emoji:"🦈",category:"fun",badge:"Popular",badgeColor:"#FF6B35",duration:"2:16",cardColor:"rgba(255,107,53,0.2)",freq:330,desc:"Doo doo doo doo doo!"},
+  {id:4,title:"Old MacDonald",artist:"Farm Friends",emoji:"🐮",category:"nature",badge:"Nature",badgeColor:"#00F5A0",duration:"3:02",cardColor:"rgba(0,245,160,0.15)",freq:349,desc:"Had a farm, E-I-E-I-O!"},
+  {id:5,title:"Wheels on the Bus",artist:"Sing-A-Long",emoji:"🚌",category:"fun",badge:"Favorite",badgeColor:"#FF4F9A",duration:"2:45",cardColor:"rgba(255,79,154,0.2)",freq:392,desc:"Go round and round!"},
+  {id:6,title:"Rock-a-Bye Baby",artist:"Sweet Dreams",emoji:"🌙",category:"lullabies",badge:"Sleep",badgeColor:"#9B5DE5",duration:"3:20",cardColor:"rgba(155,93,229,0.3)",freq:440,desc:"Gentle cradle lullaby"},
+  {id:7,title:"Itsy Bitsy Spider",artist:"Garden Songs",emoji:"🕷️",category:"nature",badge:"Nature",badgeColor:"#00F5A0",duration:"1:45",cardColor:"rgba(0,245,160,0.15)",freq:261,desc:"Climbed up the water spout"},
+  {id:8,title:"Jump Around",artist:"Dance Crew Kids",emoji:"🦘",category:"dance",badge:"Dance",badgeColor:"#FFD93D",duration:"2:55",cardColor:"rgba(255,217,61,0.15)",freq:294,desc:"Get jumping and dancing!"},
+  {id:9,title:"Row Your Boat",artist:"Riverside Kids",emoji:"⛵",category:"fun",badge:"Classic",badgeColor:"#FF6B35",duration:"2:10",cardColor:"rgba(255,107,53,0.2)",freq:330,desc:"Row row row your boat"},
+  {id:10,title:"Head Shoulders",artist:"Body Boogie",emoji:"🕺",category:"dance",badge:"Dance",badgeColor:"#FFD93D",duration:"2:30",cardColor:"rgba(255,217,61,0.15)",freq:349,desc:"Knees and toes, knees and toes!"},
+  {id:11,title:"Five Little Ducks",artist:"Pond Friends",emoji:"🦆",category:"learning",badge:"Count",badgeColor:"#00BBF9",duration:"2:25",cardColor:"rgba(0,187,249,0.2)",freq:392,desc:"Counting to five with ducks"},
+  {id:12,title:"Lullaby Moonbeam",artist:"Dream Weavers",emoji:"🌟",category:"lullabies",badge:"Sleep",badgeColor:"#9B5DE5",duration:"4:10",cardColor:"rgba(155,93,229,0.3)",freq:440,desc:"Drift off to dreamland"},
+  {id:13,title:"Color Rainbow",artist:"Art Kids",emoji:"🌈",category:"learning",badge:"Learn",badgeColor:"#00BBF9",duration:"2:50",cardColor:"rgba(0,187,249,0.2)",freq:261,desc:"Learn all the colors!"},
+  {id:14,title:"Shake It Baby",artist:"Wiggle Squad",emoji:"🎉",category:"dance",badge:"Dance",badgeColor:"#FFD93D",duration:"3:05",cardColor:"rgba(255,217,61,0.15)",freq:294,desc:"Shake shake shake it!"},
+  {id:15,title:"Bunny Hop",artist:"Spring Friends",emoji:"🐰",category:"nature",badge:"Nature",badgeColor:"#00F5A0",duration:"2:40",cardColor:"rgba(0,245,160,0.15)",freq:330,desc:"Hop hop hop along!"},
+  {id:16,title:"Silly Noodle",artist:"Giggles Gang",emoji:"🍜",category:"fun",badge:"Silly",badgeColor:"#FF4F9A",duration:"1:55",cardColor:"rgba(255,79,154,0.2)",freq:349,desc:"The silliest song ever!"},
+];
+
+let currentSong = null;
+let isPlaying = false;
+let audioCtx = null;
+let oscillator = null;
+let gainNode = null;
+let progressInterval = null;
+let elapsed = 0;
+let songDuration = 0;
+let volume = 0.7;
+let currentFilter = 'all';
+
+function renderSongs(filter='all'){
+  const grid = document.getElementById('songGrid');
+  const filtered = filter==='all' ? songs : songs.filter(s=>s.category===filter);
+  grid.innerHTML = filtered.map((s,i) => `
+    <div class="song-card ${currentSong&&currentSong.id===s.id?'active-card':''}" 
+         style="--card-color:${s.cardColor};animation-delay:${i*0.05}s"
+         onclick="playSong(${s.id})" class="song-card bounce-in">
+      <span class="card-emoji">${s.emoji}</span>
+      <div class="card-duration">${s.duration}</div>
+      <div class="card-title">${s.title}</div>
+      <div class="card-meta">${s.artist} • ${s.desc}</div>
+      <span class="card-badge" style="background:${s.badgeColor}22;color:${s.badgeColor}">${s.badge}</span>
+      <div class="card-play-indicator">${currentSong&&currentSong.id===s.id&&isPlaying?'⏸':'▶'}</div>
+    </div>
+  `).join('');
+}
+
+function filterSongs(cat, btn){
+  currentFilter = cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderSongs(cat);
+}
+
+function filterCategory(cat){
+  currentFilter = cat;
+  if(cat==='all') filterSongs('all', document.querySelector('.cat-tab'));
+  else filterSongs(cat, null);
+  document.getElementById('songGrid').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function parseDuration(str){
+  const [m,s] = str.split(':').map(Number);
+  return m*60+s;
+}
+
+function formatTime(sec){
+  const m=Math.floor(sec/60), s=Math.floor(sec%60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function playSong(id){
+  const song = songs.find(s=>s.id===id);
+  if(!song) return;
+  if(currentSong&&currentSong.id===id){
+    togglePlay(); return;
+  }
+  stopAudio();
+  currentSong = song;
+  elapsed = 0;
+  songDuration = parseDuration(song.duration);
+  updatePlayerUI();
+  startAudio();
+  renderSongs(currentFilter);
+}
+
+function updatePlayerUI(){
+  if(!currentSong) return;
+  document.getElementById('albumArt').textContent = currentSong.emoji;
+  document.getElementById('songTitle').textContent = currentSong.title;
+  document.getElementById('songArtist').textContent = currentSong.artist + ' • ' + currentSong.desc;
+  document.getElementById('songCategory').textContent = currentSong.badge;
+  document.getElementById('songCategory').style.background = currentSong.badgeColor+'22';
+  document.getElementById('songCategory').style.color = currentSong.badgeColor;
+  document.getElementById('timeDuration').textContent = currentSong.duration;
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('timeElapsed').textContent='0:00';
+}
+
+function startAudio(){
+  try {
+    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    gainNode = audioCtx.createGain();
+    gainNode.gain.value = volume * 0.15;
+    gainNode.connect(audioCtx.destination);
+    playTone();
+    isPlaying = true;
+    document.getElementById('playBtn').textContent = '⏸';
+    document.getElementById('albumArt').classList.add('playing');
+    startProgress();
+  } catch(e){}
+}
+
+function playTone(){
+  if(!audioCtx||!currentSong) return;
+  oscillator = audioCtx.createOscillator();
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(currentSong.freq, audioCtx.currentTime);
+  // Simple melody by cycling through related frequencies
+  const freqs = [currentSong.freq, currentSong.freq*1.25, currentSong.freq*1.5, currentSong.freq*1.25, currentSong.freq];
+  freqs.forEach((f,i)=>{
+    oscillator.frequency.setValueAtTime(f, audioCtx.currentTime + i*0.5);
+  });
+  oscillator.connect(gainNode);
+  oscillator.start();
+}
+
+function stopAudio(){
+  if(oscillator){try{oscillator.stop();oscillator.disconnect();}catch(e){}}
+  if(audioCtx){try{audioCtx.close();}catch(e){}}
+  oscillator=null; audioCtx=null; gainNode=null;
+  isPlaying=false;
+  clearInterval(progressInterval);
+  document.getElementById('playBtn').textContent='▶';
+  document.getElementById('albumArt').classList.remove('playing');
+}
+
+function togglePlay(){
+  if(!currentSong){
+    playSong(songs[0].id); return;
+  }
+  if(isPlaying){
+    stopAudio();
+  } else {
+    startAudio();
+  }
+  renderSongs(currentFilter);
+}
+
+function startProgress(){
+  clearInterval(progressInterval);
+  progressInterval = setInterval(()=>{
+    if(!isPlaying) return;
+    elapsed += 0.1;
+    if(elapsed >= songDuration){ nextSong(); return; }
+    const pct = (elapsed/songDuration)*100;
+    document.getElementById('progressFill').style.width = pct+'%';
+    document.getElementById('timeElapsed').textContent = formatTime(elapsed);
+    // Cycle tones
+    if(oscillator && audioCtx){
+      const freqs = [currentSong.freq, currentSong.freq*1.25, currentSong.freq*1.5, currentSong.freq*1.25];
+      const idx = Math.floor(elapsed*2) % freqs.length;
+      try{ oscillator.frequency.setValueAtTime(freqs[idx], audioCtx.currentTime); }catch(e){}
+    }
+  }, 100);
+}
+
+function seekProgress(e){
+  if(!currentSong) return;
+  const bar = e.currentTarget;
+  const pct = e.offsetX / bar.offsetWidth;
+  elapsed = pct * songDuration;
+  document.getElementById('progressFill').style.width = (pct*100)+'%';
+  document.getElementById('timeElapsed').textContent = formatTime(elapsed);
+}
+
+function prevSong(){
+  if(!currentSong) return;
+  const idx = songs.findIndex(s=>s.id===currentSong.id);
+  const prev = songs[(idx-1+songs.length)%songs.length];
+  playSong(prev.id);
+}
+
+function nextSong(){
+  const idx = currentSong ? songs.findIndex(s=>s.id===currentSong.id) : -1;
+  const next = songs[(idx+1)%songs.length];
+  playSong(next.id);
+}
+
+function setVolume(v){
+  volume = parseFloat(v);
+  if(gainNode) gainNode.gain.value = volume*0.15;
+}
+
+// Init
+renderSongs('all');
+</script>
+</body>
+</html>
